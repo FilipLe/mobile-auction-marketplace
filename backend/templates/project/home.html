@@ -1,0 +1,50 @@
+<!-- 
+File: project/templates/project/home.html 
+Author: Nguyen Le
+Description: Home page showing featured auctions
+-->
+
+<!-- replace content in base placeholder -->
+{% extends 'project/base.html' %}
+
+<!-- load css -->
+{% load static %}
+
+<!-- scriplet -->
+{% block content %}
+<div class="grid-container">
+    <header class="header">
+        <h2>Featured Auctions</h2>
+    </header>
+
+    <div class="main">
+        <!-- check if there are auction listings -->
+        {% if featured_items %}
+            <div class="grid post-grid">
+                <!-- loop through all featured items to display -->
+                {% for item in featured_items %}
+                    <div class="post-item">
+                        <!-- load photo by primary key-->
+                        <a href="{% url 'item_detail' item.pk %}">
+                            {% if item.item_image %}
+                                <img src="{{ item.item_image.url }}" alt="{{ item.title }}">
+                            {% else %}
+                                <img src="{% static 'default.png' %}" alt="No image">
+                            {% endif %}
+                            <!-- basic item info -->
+                            <div class="item-info">
+                                <h3>{{ item.title }}</h3>
+                                <p>Current Bid: ${{ item.get_current_bid }}</p>
+                                <p>Time Left: {{ item.get_time_left }}</p>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <h2>No active auctions at the moment</h2>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

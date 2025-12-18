@@ -1,0 +1,36 @@
+<!-- 
+File: project/templates/project/update_profile_form.html 
+Author: Nguyen Le
+Description: Update a profile
+-->
+
+<!-- load base content -->
+{% extends 'project/base.html' %}
+
+<!-- load scriplet -->
+{% block content %}
+<div class="grid-container">
+    <header class="header">
+        <h2>Update Profile: @{{ object.username }}</h2>
+        <hr>
+    </header>
+
+    <div class="main">
+        <!-- form for updating -->
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <table>
+                {{ form.as_table }}
+            </table>
+
+            <input type="submit" name="update" value="Update Profile">
+        </form>
+
+        <!-- back to profile -->
+        <a class="button-like" href="{% url 'my_profile' %}">
+            <button>Back to Profile</button> 
+        </a>
+    </div>
+</div>
+{% endblock %}
+

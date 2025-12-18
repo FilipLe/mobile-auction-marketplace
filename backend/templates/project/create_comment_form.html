@@ -1,0 +1,38 @@
+<!-- 
+File: project/templates/project/create_comment_form.html 
+Author: Nguyen Le
+Description: Create a comment on an item
+-->
+
+<!-- load base content -->
+{% extends 'project/base.html' %}
+
+<!-- load scriplet -->
+{% block content %}
+<div class="grid-container">
+    <header class="header">
+        <h2>Add Comment on: {{ item.title }}</h2>
+        <hr>
+    </header>
+
+    <div class="main">
+        <!-- Posting -->
+        <form method="POST">
+            {% csrf_token %}
+            <table>
+                <!-- existing fields from Post -->
+                {{ form.as_table }}
+            </table>
+
+            <!-- submit action -->
+            <input type="submit" name="comment" value="Add Comment">
+        </form>
+
+        <!-- back to item -->
+        <a class="button-like" href="{% url 'item_detail' item.pk %}">
+            <button>Back to Item</button> 
+        </a>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,50 @@
+<!-- 
+File: project/templates/project/profile_list.html 
+Author: Nguyen Le
+Description: List all profiles
+-->
+
+<!-- replace content in base placeholder -->
+{% extends 'project/base.html' %}
+
+<!-- load css -->
+{% load static %}
+
+<!-- scriptlet -->
+{% block content %}
+<div class="grid-container">
+    <header class="header">
+        <h2>All Profiles</h2>
+    </header>
+
+    <div class="main">
+        <!-- check if there are profiles -->
+        {% if profiles %}
+            <div class="grid post-grid">
+                <!-- loop through all profiles -->
+                {% for profile in profiles %}
+                    <div class="post-item">
+                        <!-- load photo by primary key-->
+                        <a href="{% url 'profile_detail' profile.pk %}">
+                            {% if profile.profile_image %}
+                                <img src="{{ profile.profile_image.url }}" alt="{{ profile.username }}">
+                            {% else %}
+                                <img src="{% static 'default.png' %}" alt="No image">
+                            {% endif %}
+                            <div class="item-info">
+                                <h3>@{{ profile.username }}</h3>
+                                <p>{{ profile.first_name }} {{ profile.last_name }}</p>
+                                <p>Joined: {{ profile.join_date|date:"M Y" }}</p>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        <!-- no profiles -->
+        {% else %}
+            <h2>No profiles available</h2>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

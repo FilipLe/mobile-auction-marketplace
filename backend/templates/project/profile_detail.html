@@ -1,0 +1,120 @@
+<!-- 
+File: project/templates/project/profile_detail.html 
+Author: Nguyen Le
+Description: Show profile detail view
+-->
+
+<!-- replace content in base placeholder -->
+{% extends 'project/base.html' %}
+
+<!-- load css -->
+{% load static %}
+
+<!-- scriplet -->
+{% block content %}
+<div class="grid-container">
+    <header class="header">
+        <h2>@{{ profile.username }}</h2>
+    </header>
+
+    <div class="main">
+        <!-- profile header -->
+        <div class="grid profile-header">
+            <!-- profile image -->
+            <div class="profile-image">
+                {% if profile.profile_image %}
+                    <img src="{{ profile.profile_image.url }}" alt="{{ profile.username }}">
+                {% else %}
+                    <img src="{% static 'default.png' %}" alt="No image">
+                {% endif %}
+            </div>
+            <!-- profile basic info -->
+            <div class="profile-info">
+                <h2>{{ profile.first_name }} {{ profile.last_name }}</h2>
+                <p><strong>Username:</strong> @{{ profile.username }}</p>
+                <p><strong>Bio:</strong> {{ profile.bio_text|linebreaks }}</p>
+                <p><strong>Joined:</strong> {{ profile.join_date }}</p>
+                
+                <!-- get average ratings, check if there is rating on current profile -->
+                {% if profile.get_average_rating.numerical_rating__avg %}
+                    <p><strong>Average Rating:</strong> {{ profile.get_average_rating.numerical_rating__avg|floatformat:1 }}/5.0</p>
+                {% else %}
+                    <!-- no ratings yet -->
+                    <p><strong>Average Rating:</strong> No ratings yet</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- update profile button -->
+        {% if request.user == profile.user and request.user.is_authenticated %}
+        <div class="button-row">
+            <a class="button-like" href="{% url 'update_profile' %}">
+                <button>Update Profile</button>
+            </a>
+        </div>
+        {% endif %}
+
+        <!-- leave review button, check if not own profile -->
+        {% if request.user.is_authenticated and request.user != profile.user %}
+        <div class="button-row">
+            <a class="button-like" href="{% url 'create_review' profile.pk %}">
+                <button>Leave Review</button>
+            </a>
+        </div>
+        {% endif %}
+
+        <!-- items section -->
+        <div>
+            <h2>Items for Auction ({{ items.count }})</h2>
+            <!-- check if item exists -->
+            {% if items %}
+                <div class="grid post-grid">
+                    <!-- loop through all items -->
+                    {% for item in items %}
+                        <div class="post-item">
+                            <!-- load photo by primary key-->
+                            <a href="{% url 'item_detail' item.pk %}">
+                                {% if item.item_image %}
+                                    <img src="{{ item.item_image.url }}" alt="{{ item.title }}">
+                                {% else %}
+                                    <img src="{% static 'default.png' %}" alt="No image">
+                                {% endif %}
+                                <div class="item-info">
+                                    <h3>{{ item.title }}</h3>
+                                    <p>Current Bid: ${{ item.get_current_bid }}</p>
+                                </div>
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            <!-- no items -->
+            {% else %}
+                <p>No items listed yet</p>
+            {% endif %}
+        </div>
+
+        <!-- reviews section -->
+        <div class="comments-section">
+            <h2>Reviews ({{ reviews.count }})</h2>
+            <!-- check if tehre are reviews -->
+            {% if reviews %}
+                <div class="comment-list">
+                    <!-- loop through all the reviews and its info -->
+                    {% for review in reviews %}
+                        <div class="comment-item">
+                            <strong>@{{ review.reviewer.username }}</strong>
+                            <span>— Rating: {{ review.numerical_rating }}/5</span><br>
+                            <p>{{ review.feedback|linebreaks }}</p>
+                            <small>{{ review.timestamp }}</small>
+                        </div>
+                    {% endfor %}
+                </div>
+            <!-- no reviews -->
+            {% else %}
+                <p>No reviews yet</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,36 @@
+<!-- 
+File: project/templates/project/update_item_form.html 
+Author: Nguyen Le
+Description: Update an auction item
+-->
+
+<!-- load base content -->
+{% extends 'project/base.html' %}
+
+<!-- load scriplet -->
+{% block content %}
+<div class="grid-container">
+    <header class="header">
+        <h2>Update Auction Item: {{ object.title }}</h2>
+        <hr>
+    </header>
+
+    <div class="main">
+        <!-- form for updating -->
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <table>
+                {{ form.as_table }}
+            </table>
+
+            <input type="submit" name="update" value="Update Item">
+        </form>
+
+        <!-- back to item -->
+        <a class="button-like" href="{% url 'item_detail' object.pk %}">
+            <button>Back to Item</button> 
+        </a>
+    </div>
+</div>
+{% endblock %}
+

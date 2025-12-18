@@ -1,0 +1,44 @@
+<!-- 
+File: project/templates/project/create_bid_form.html 
+Author: Nguyen Le
+Description: Place a bid on an item
+-->
+
+<!-- load base content -->
+{% extends 'project/base.html' %}
+
+<!-- load scriplet -->
+{% block content %}
+<div class="grid-container">
+    <header class="header">
+        <h2>Place Bid on: {{ item.title }}</h2>
+        <hr>
+    </header>
+
+    <div class="main">
+        <!-- retrieve current and starting bid -->
+        <div class="item-info">
+            <p><strong>Current Bid:</strong> ${{ item.get_current_bid }}</p>
+            <p><strong>Starting Bid:</strong> ${{ item.starting_bid }}</p>
+        </div>
+
+        <!-- Posting -->
+        <form method="POST">
+            {% csrf_token %}
+            <table>
+                <!-- existing fields from Post -->
+                {{ form.as_table }}
+            </table>
+
+            <!-- submit action -->
+            <input type="submit" name="bid" value="Place Bid">
+        </form>
+
+        <!-- back to item -->
+        <a class="button-like" href="{% url 'item_detail' item.pk %}">
+            <button>Back to Item</button> 
+        </a>
+    </div>
+</div>
+{% endblock %}
+

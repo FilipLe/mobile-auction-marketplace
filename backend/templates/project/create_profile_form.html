@@ -1,0 +1,44 @@
+<!-- 
+File: project/templates/project/create_profile_form.html 
+Author: Nguyen Le
+Description: Create a new profile/user
+-->
+
+<!-- load base content -->
+{% extends 'project/base.html' %}
+
+<!-- load scriplet -->
+{% block content %}
+<div class="grid-container">
+    <header class="header">
+        <h2>Create Account</h2>
+        <hr>
+    </header>
+
+    <div class="main">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <!-- create Login User Account (username and password) -->
+            <h3>User Account</h3>
+            <table>
+                {{ user_form.as_table }}
+            </table>
+
+            <!-- create public Profile -->
+            <h3>Profile Information</h3>
+            <table>
+                {{ form.as_table }}
+            </table>
+
+            <!-- submit action -->
+            <input type="submit" name="create" value="Create Account">
+        </form>
+
+        <br>
+        <hr>
+        <p>Already have an account? <a class="like-follow" href="{% url 'login' %}">Login here</a></p>
+    </div>
+</div>
+{% endblock %}
+

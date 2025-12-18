@@ -1,0 +1,54 @@
+<!-- 
+File: project/templates/project/item_list.html 
+Author: Nguyen Le
+Description: List all auction items
+-->
+
+<!-- replace content in base placeholder -->
+{% extends 'project/base.html' %}
+
+<!-- load css -->
+{% load static %}
+
+<!-- scriplet -->
+{% block content %}
+<div class="grid-container">
+    <header class="header">
+        <h2>All Auction Items</h2>
+    </header>
+
+    <div class="main">
+        <!-- check if there are items -->
+        {% if items %}
+            <div class="grid post-grid">
+                <!-- loop through all the items and their info -->
+                {% for item in items %}
+                    <div class="post-item">
+                        <!-- load photo by primary key-->
+                        <a href="{% url 'item_detail' item.pk %}">
+                            {% if item.item_image %}
+                                <img src="{{ item.item_image.url }}" alt="{{ item.title }}">
+                            {% else %}
+                                <img src="{% static 'default.png' %}" alt="No image">
+                            {% endif %}
+                            <div class="item-info">
+                                <!-- basic item info -->
+                                <h3>{{ item.title }}</h3>
+                                <p>Owner: @{{ item.owner.username }}</p>
+                                <p>Starting Bid: ${{ item.starting_bid }}</p>
+                                <p>Current Bid: ${{ item.get_current_bid }}</p>
+                                <p>Bids: {{ item.get_num_bids }}</p>
+                                <p>Time Left: {{ item.get_time_left }}</p>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        <!-- no items -->
+        {% else %}
+            <h2>No items available</h2>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

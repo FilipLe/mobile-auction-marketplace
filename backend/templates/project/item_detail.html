@@ -1,0 +1,109 @@
+<!-- 
+File: project/templates/project/item_detail.html 
+Author: Nguyen Le
+Description: Show item auction detail view
+-->
+
+<!-- replace content in base placeholder -->
+{% extends 'project/base.html' %}
+
+<!-- load css -->
+{% load static %}
+
+<!-- scriplet -->
+{% block content %}
+<div class="grid-container">
+    <header class="header">
+        <h2>{{ item.title }}</h2>
+    </header>
+
+    <div class="main">
+        <!-- item Image -->
+        <div class="item-image">
+            {% if item.item_image %}
+                <img src="{{ item.item_image.url }}" alt="{{ item.title }}">
+            {% else %}
+                <img src="{% static 'default.png' %}" alt="No image">
+            {% endif %}
+        </div>
+
+        <!-- item info -->
+        <div class="item-details">
+            <h3>{{ item.title }}</h3>
+            <p><strong>Owner:</strong> <a href="{% url 'profile_detail' item.owner.pk %}">@{{ item.owner.username }}</a></p>
+            <p><strong>Description:</strong> {{ item.description|linebreaks }}</p>
+            <p><strong>Starting Bid:</strong> ${{ item.starting_bid }}</p>
+            <p><strong>Current Bid:</strong> ${{ item.get_current_bid }}</p>
+            <p><strong>Number of Bids:</strong> {{ item.get_num_bids }}</p>
+            <p><strong>Listed At:</strong> {{ item.listed_at }}</p>
+            <p><strong>End Time:</strong> {{ item.end_time }}</p>
+            <p><strong>Time Left:</strong> {{ item.get_time_left }}</p>
+        </div>
+
+        <!-- update/delete buttons for owner -->
+        {% if request.user.is_authenticated and request.user == item.owner.user %}
+        <div class="button-row">
+            <a class="button-like" href="{% url 'update_item' item.pk %}">Update Item</a>
+            <a class="button-like" href="{% url 'delete_item' item.pk %}">Delete Item</a>
+        </div>
+        {% endif %}
+
+        <!-- place bid button -->
+        {% if request.user.is_authenticated and request.user != item.owner.user %}
+        <div class="button-row">
+            <a class="button-like" href="{% url 'create_bid' item.pk %}">Place Bid</a>
+        </div>
+        {% endif %}
+
+        <!-- bids section -->
+        <div class="comments-section">
+            <h3>Bids ({{ bids.count }})</h3>
+            <!-- check if there are bids -->
+            {% if bids %}
+                <div class="comment-list">
+                    <!-- loop through all the bids and list their info -->
+                    {% for bid in bids %}
+                        <div class="comment-item">
+                            <strong>@{{ bid.bidder.username }}</strong>
+                            <span>— ${{ bid.bid_amount }}</span><br>
+                            <small>{{ bid.timestamp }}</small>
+                        </div>
+                    {% endfor %}
+                </div>
+            <!-- no bids -->
+            {% else %}
+                <p>No bids yet. Be the first to bid!</p>
+            {% endif %}
+        </div>
+
+        <!-- comments section -->
+        <div class="comments-section">
+            <h3>Comments ({{ comments.count }})</h3>
+            <!-- check if there are comments -->
+            {% if comments %}
+                <div class="comment-list">
+                    <!-- loop through all the comments and list their info -->
+                    {% for comment in comments %}
+                        <div class="comment-item">
+                            <strong>@{{ comment.profile.username }}</strong>
+                            <span>— {{ comment.text }}</span><br>
+                            <small>{{ comment.timestamp }}</small>
+                        </div>
+                    {% endfor %}
+                </div>
+            <!-- no comments -->
+            {% else %}
+                <p>No comments yet. Be the first to comment!</p>
+            {% endif %}
+        </div>
+
+        <!-- add comment button -->
+        {% if request.user.is_authenticated %}
+        <div class="button-row">
+            <a class="button-like" href="{% url 'create_comment' item.pk %}">Add Comment</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

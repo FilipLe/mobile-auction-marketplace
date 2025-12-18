@@ -1,0 +1,37 @@
+<!-- 
+File: project/templates/project/login.html 
+Author: Nguyen Le
+Description: Login page
+-->
+
+<!-- load base content -->
+{% extends 'project/base.html' %}
+
+<!-- load scriplet -->
+{% block content %}
+<div class="grid-container">
+    <header class="header">
+        <h2>Login to Auction Marketplace</h2>
+    </header>
+
+    <div class="main">
+        <!-- user login form -->
+        <form action="{% url 'login' %}" method="POST">
+            {% csrf_token %}
+            {{ form }}
+            <br>
+            <input type="submit" value="Login">
+
+            <input type="hidden" name="next" value="{% url 'home' %}">
+        </form>
+
+        <br>
+        <hr>
+
+        <!-- allow user option to register account in log in screen -->
+        <p>Don't have an account?</p>
+        <a class="like-follow" href="{% url 'create_profile' %}">Register here</a>
+    </div>
+</div>
+{% endblock %}
+
